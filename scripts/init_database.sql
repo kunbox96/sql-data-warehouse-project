@@ -32,13 +32,26 @@ GO
 USE MyDataWarehouse;
 GO
 
--- Create Schema for Medalion Architecture
-IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name IN('bronze', 'silver', 'gold'))
+-- Create Schema for Medallion Architecture
+-- 1. Khởi tạo Schema Bronze
+IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'bronze')
 BEGIN
-	EXEC('create schema bronze');
-	EXEC('create schema silver');
-	EXEC('create schema gold');
-END
+    EXEC('CREATE SCHEMA bronze;');
+END;
+GO
+
+-- 2. Khởi tạo Schema Silver
+IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'silver')
+BEGIN
+    EXEC('CREATE SCHEMA silver;');
+END;
+GO
+
+-- 3. Khởi tạo Schema Gold
+IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'gold')
+BEGIN
+    EXEC('CREATE SCHEMA gold;');
+END;
 GO
 
 
