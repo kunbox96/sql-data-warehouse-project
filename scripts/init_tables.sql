@@ -1,3 +1,14 @@
+/*
+======================================================================
+ DDL Script: Create Bronze Tables
+=======================================================================
+ Script Purpose: 
+  - This script create tables in the 'bronze' schema, dropping 
+    existing tables if they already exists
+  
+  - Run this script to re-define the DDL structure of 'bronze' tables
+*/
+
 USE MyDataWarehouse;
 GO
 
@@ -12,9 +23,9 @@ IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'silver')
     EXEC('CREATE SCHEMA silver;');
 GO
 
--- ===================================================================
+-- ============================================================================
 -- 2. Khởi tạo các bảng tầng Bronze (Sử dụng Pattern: Drop & Re-create an toàn)
--- ===================================================================
+-- ============================================================================
 
 -- -------------------------------------------------------------------
 -- Bảng: bronze.crm_cust_info
