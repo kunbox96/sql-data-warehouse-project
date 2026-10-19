@@ -1,0 +1,52 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Alvin Nguyen\\Desktop\\babara_SQL_ultimate_course\\Warehouse Project\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Alvin Nguyen\\Desktop\\babara_SQL_ultimate_course\\Warehouse Project\\scripts\\Silver Layer\\Explore and cleansing data.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:scripts\\Silver Layer\\Explore and cleansing data.sql||{B5A506EB-11BE-4782-9A18-21265C2CA0B4}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{ed7d6f85-175b-4b57-9887-71fe8b865fc8}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{ed7d6f85-175b-4b57-9887-71fe8b865fc8}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{857929ed-74c5-4660-91ce-b52a0fc0f324}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{36d1f878-fc30-4862-a521-c48f3c5d3ac1}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Explore and cleansing data.sql - DESKTOP-VQNCJLF\\SQLEXPRESS.MyDataWarehouse (DESKTOP-VQNCJLF\\Alvin Nguyen (83))",
+              "DocumentMoniker": "C:\\Users\\Alvin Nguyen\\Desktop\\babara_SQL_ultimate_course\\Warehouse Project\\scripts\\Silver Layer\\Explore and cleansing data.sql",
+              "RelativeDocumentMoniker": "scripts\\Silver Layer\\Explore and cleansing data.sql",
+              "ToolTip": "C:\\Users\\Alvin Nguyen\\Desktop\\babara_SQL_ultimate_course\\Warehouse Project\\scripts\\Silver Layer\\Explore and cleansing data.sql - DESKTOP-VQNCJLF\\SQLEXPRESS.MyDataWarehouse (DESKTOP-VQNCJLF\\Alvin Nguyen (83))",
+              "RelativeToolTip": "scripts\\Silver Layer\\Explore and cleansing data.sql - DESKTOP-VQNCJLF\\SQLEXPRESS.MyDataWarehouse (DESKTOP-VQNCJLF\\Alvin Nguyen (83))",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-10-18T05:56:42.263Z",
+              "EditorCaption": " - DESKTOP-VQNCJLF\\SQLEXPRESS.MyDataWarehouse (DESKTOP-VQNCJLF\\Alvin Nguyen (83))"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
