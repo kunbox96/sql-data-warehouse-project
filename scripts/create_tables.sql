@@ -1,4 +1,27 @@
 /*
+=======================================================================
+ LOG table record error from procedure
+=======================================================================
+*/
+
+USE MyDataWarehouse;
+
+IF OBJECT_ID('dbo.etl_error_logs', 'U') IS NULL
+
+CREATE TABLE dbo.etl_error_logs (
+    log_id INT IDENTITY(1,1) NOT NULL,
+    procedure_name NVARCHAR(100) NULL,
+    error_number INT NULL,
+    error_severity INT NULL,
+    error_state INT NULL,
+    error_line INT NULL,
+    error_message NVARCHAR(4000) NULL,
+    error_time DATETIME NULL,
+    
+    CONSTRAINT PK_etl_error_logs PRIMARY KEY CLUSTERED (log_id)
+);
+
+/*
 ======================================================================
  DDL Script: Create Bronze Tables
 =======================================================================

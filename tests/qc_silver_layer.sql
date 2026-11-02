@@ -1,9 +1,31 @@
--------------------- QC for table crm_cust_info -----------------------
+/*
+===============================================================================
+Quality Checks
+===============================================================================
+Script Purpose:
+    This script perform various quality checks for data consitency , accuracy,
+	and standardization across the 'silver' schema. It includes checks for:
+		- Null or duplicate primary keys.
+		- Unwanted space for string fields.
+		- Data standardization and consistency.
+		- Invalid date ranges and orders.
+		- Data consistency between related fields
+		
+Usage Notes:
+    - Run these checks after data loading Silver Layer.
+	- Investigate and resolve any discrepancies found during the checks.
+
+Usage Example:
+    EXEC Silver.load_silver;
+===============================================================================
+*/
+
+-- ============================================================================
+-- Checking 'silver.crm_cust_info'
+-- ============================================================================
 
 -- Check For Nulls or Duplicates in Primary Key
 -- Expectation: No Result
-
--- Duplicate values
 WITH tmp AS(
 	SELECT 
 		*,
@@ -24,7 +46,7 @@ FROM silver.crm_cust_info
 WHERE cst_firstname != TRIM(cst_firstname)
 
 -- Check inconsistency 
--- Expectations: No Result
+-- Expectations: No duplicates, typo
 SELECT DISTINCT cst_gndr
 FROM silver.crm_cust_info
 GROUP BY cst_gndr
@@ -34,8 +56,10 @@ SELECT DISTINCT cst_marital_status
 FROM silver.crm_cust_info
 GROUP BY cst_marital_status
 
--------------------- QC for table crm_prd_info -----------------------
-SELECT * FROM bronze.crm_prd_info
+
+-- ============================================================================
+-- Checking 'silver.crm_prd_info'
+-- ============================================================================
 
 -- Check for unwanted spaces
 -- Expectations: No Result
@@ -51,12 +75,22 @@ SELECT *
 FROM bronze.crm_prd_info
 WHERE prd_cost < 0 OR prd_cost IS NULL
 
+-- Check for invalid date range
+-- Expectations: No Result
+SELECT
+	*
+FROM silver.crm_prd_info
+WHERE prd_start_dt > prd_end_dt 
 
--- ======= Check for tables silver.crm_sales_details
+-- ============================================================================
+-- Checking 'silver.crm_sales_details'
+-- ============================================================================
+
 -- Check for Invalid Date Orders
 -- Expectations: No Result
 SELECT * 
-FROM silver.crm_sales_details;
+FROM silver.crm_sales_details
+WHERE sls_order_dt > sls_ship_dt OR sls_ship_dt > sls_due_dt
 
 -- Check for NULL in key columns
 -- Expectation: No Result
@@ -96,29 +130,31 @@ where sls_sales != sls_quantity * sls_price
    or sls_sales is null or sls_quantity is null or sls_price is null
    or sls_sales <= 0 or sls_quantity <= 0 or sls_price <= 0
 
+-- ============================================================================
+-- Checking 'silver.erp_cust_az12'
+-- ============================================================================
 
--- =========================================
--- Check for tables silver.erp_cust_az12
-
--- bdate invalid values
+-- Check invalid date range 'bdate' column
+-- Expected: No Results
 select
 	*
 from silver.erp_cust_az12
 where DATEDIFF(year,GETDATE(),bdate) > 100
-   OR DATEDIFF(year,bdate,GETDATE()) > 100
 
--- check for invalid cid
+-- Check for invalid cid
+-- Expected: No Results
 select *
 from silver.erp_cust_az12
 where cid like 'NA%'
 
 -- Check for inconsistency and invalid gen
+-- Expected: No Results
 select distinct gen 
 from silver.erp_cust_az12
 
-
--- =========================================
--- Check for tables silver.erp_loc_a101
+-- ============================================================================
+-- Checking 'silver.erp_loc_a101'
+-- ============================================================================
 
 -- Check duplicate values
 -- Expectation: No Results
@@ -153,21 +189,21 @@ where not exists(
 	where s.cid = s1.cst_key
 )
 
--- =========================================
--- Check for tables silver.erp_px_cat_g1v2
+-- ============================================================================
+-- Checking 'silver.erp_px_cat_g1v2'
+-- ============================================================================
 
 -- Check for unwanted space in category, sub-category columns
 -- Expected: No Result
-
 select * 
 from bronze.erp_px_cat_g1v2
 where cat != TRIM(cat)
    or subcat != TRIM(subcat)
    or maintenance != TRIM(maintenance)
 
+
 -- Check for inconsitence 
 -- Expected: No Result
-
 select 
 	DISTINCT cat
 from bronze.erp_px_cat_g1v2
@@ -187,4 +223,3 @@ where not exists (
 	from silver.crm_prd_info c
 	where trim(e.id) = c.category_id
 )
-

@@ -1,28 +1,43 @@
-/* 
+/*
 ===============================================================================
-THIS PROCEDURE CREATED WITH PURPOSE TO TRANSFORM AND LOAD DATA FROM BRONZE LAYER
-INTO SILVER LAYER
+Stored Procedure: Load Silver Layer (Bronze -> Silver)
+===============================================================================
+Script Purpose:
+    This stored procedure performs the ETL (Extract, Transform, Load) process to 
+    populate the 'silver' schema tables from the 'bronze' schema.
+	Actions Performed:
+		- Truncates Silver tables.
+		- Inserts transformed and cleansed data from Bronze into Silver tables.
+		
+Parameters:
+    None. 
+	  This stored procedure does not accept any parameters or return any values.
 
-- Method used is truncate data from silver -> transform -> load data
-
+Usage Example:
+    EXEC Silver.load_silver;
 ===============================================================================
 */
 
-CREATE OR ALTER PROCEDURE silver.tl_silver_layer AS
+CREATE OR ALTER PROCEDURE silver.load_silver AS
 BEGIN
 	BEGIN TRY
-	DECLARE @start_time DATETIME, @end_time DATETIME, @batch_start_time DATETIME, @batch_end_time DATETIME
+	DECLARE @start_time DATETIME, @end_time DATETIME, @batch_start_time DATETIME, @batch_end_time DATETIME, @row_before INT, @row_after INT
 
 	SET @batch_start_time = GETDATE();
 
 	-- ======================== TRANSFORM FOR SILVER LAYER ========================
 	-- TRANSFORM AND LOAD: crm_cust_info
-
+		
 		BEGIN TRANSACTION
+		PRINT '============================================================='
+		PRINT '            TRANSFORM AND LOAD FOR CRM SILVER LAYER          '
+		PRINT '============================================================='
 		PRINT 'Start truncate, transfrom and load table silver.crm_cust_info'
 		PRINT ''
 
 		SET @start_time = GETDATE();
+		SELECT @row_before = COUNT(*) FROM silver.crm_cust_info;
+
 		TRUNCATE TABLE silver.crm_cust_info;
 
 		WITH tmp AS(
@@ -63,9 +78,11 @@ BEGIN
 		  AND cst_id IS NOT NULL;
 
 		SET @end_time = GETDATE();
+		SELECT @row_after = COUNT(*) FROM silver.crm_cust_info;
 
 		PRINT N'> Finished transform & Load data cho bảng silver.crm_cust_info';
 		PRINT '>> Load Duration: ' + CAST(DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + ' seconds' ;
+		PRINT N'>> Row added: ' + CAST((@row_after - @row_before) AS NVARCHAR)
 		PRINT '        ----        '
 
 		-- =================================================================
@@ -75,6 +92,7 @@ BEGIN
 		PRINT '' 
 
 		SET @start_time = GETDATE();
+		SELECT @row_before = COUNT(*) FROM silver.crm_prd_info;
 
 		TRUNCATE TABLE silver.crm_prd_info;
 
@@ -108,9 +126,11 @@ BEGIN
 		WHERE ISNULL(prd_cost, 0) >= 0;
 
 		SET @end_time = GETDATE();
+		SELECT @row_after = COUNT(*) FROM silver.crm_prd_info;
 
 		PRINT N'> Finished transform & Load data cho bảng silver.crm_prd_info';
 		PRINT '>> Load Duration: ' + CAST(DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + ' seconds' ;
+		PRINT N'>> Row added: ' + CAST((@row_after - @row_before) AS NVARCHAR)
 		PRINT '        ----        '
 
 		-- =================================================================
@@ -120,6 +140,7 @@ BEGIN
 		PRINT ''
 
 		SET @start_time = GETDATE();
+		SELECT @row_before = COUNT(*) FROM silver.crm_sales_details;
 
 		TRUNCATE TABLE silver.crm_sales_details;
 
@@ -165,18 +186,24 @@ BEGIN
 		FROM bronze.crm_sales_details;
 
 		SET @end_time = GETDATE();
+		SELECT @row_after = COUNT(*) FROM silver.crm_sales_details;
 
 		PRINT N'> Finished transform & Load data cho bảng silver.crm_sales_details';
 		PRINT '>> Load Duration: ' + CAST(DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + ' seconds' ;
+		PRINT N'>> Row added: ' + CAST((@row_after - @row_before) AS NVARCHAR)
 		PRINT '        ----        '
 
 		-- =================================================================
 		-- TRANSFORM AND LOAD: erp_cust_az12
 
+		PRINT '============================================================='
+		PRINT '            TRANSFORM AND LOAD FOR ERP SILVER LAYER          '
+		PRINT '============================================================='
 		PRINT 'Start truncate, transfrom and load table silver.erp_cust_az12'
 		PRINT '' 
 
 		SET @start_time = GETDATE();
+		SELECT @row_before = COUNT(*) FROM silver.erp_cust_az12;
 
 		TRUNCATE TABLE silver.erp_cust_az12;
 
@@ -192,7 +219,7 @@ BEGIN
 				ELSE cid
 			END AS cid,
 			CASE 
-				WHEN DATEDIFF(YEAR,bdate, GETDATE()) > 100 OR DATEDIFF(YEAR,GETDATE(), bdate) > 100
+				WHEN /*DATEDIFF(YEAR,bdate, GETDATE()) > 100 OR*/ DATEDIFF(YEAR,GETDATE(), bdate) > 100
 				THEN NULL
 				ELSE bdate
 			END AS bdate,
@@ -204,9 +231,11 @@ BEGIN
 		from bronze.erp_cust_az12;
 
 		SET @end_time = GETDATE();
+		SELECT @row_after = COUNT(*) FROM silver.erp_cust_az12;
 
 		PRINT N'> Finished transform & Load data cho bảng silver.erp_cust_az12';
 		PRINT '>> Load Duration: ' + CAST(DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + ' seconds' ;
+		PRINT N'>> Row added: ' + CAST((@row_after - @row_before) AS NVARCHAR)
 		PRINT '        ----        '
 
 		-- =================================================================
@@ -216,6 +245,7 @@ BEGIN
 		PRINT ''
 
 		SET @start_time = GETDATE();
+		SELECT @row_before = COUNT(*) FROM silver.erp_loc_a101;
 
 		TRUNCATE TABLE silver.erp_loc_a101
 
@@ -238,9 +268,11 @@ BEGIN
 		FROM bronze.erp_loc_a101;
 
 		SET @end_time = GETDATE();
+		SELECT @row_after = COUNT(*) FROM silver.erp_loc_a101;
 
 		PRINT N'> Finished transform & Load data cho bảng silver.erp_loc_a101';
 		PRINT '>> Load Duration: ' + CAST(DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + ' seconds' ;
+		PRINT N'>> Row added: ' + CAST((@row_after - @row_before) AS NVARCHAR)
 		PRINT '        ----        '
 
 		-- =================================================================
@@ -251,6 +283,7 @@ BEGIN
 		PRINT '';
 
 		SET @start_time = GETDATE();
+		SELECT @row_before = COUNT(*) FROM silver.erp_px_cat_g1v2;
 
 		TRUNCATE TABLE silver.erp_px_cat_g1v2;
 
@@ -267,9 +300,11 @@ BEGIN
 		FROM   bronze.erp_px_cat_g1v2;
 
 		SET @end_time = GETDATE();
+		SELECT @row_after = COUNT(*) FROM silver.erp_px_cat_g1v2;
 
 		PRINT N'> Finished transform & Load data cho bảng silver.erp_px_cat_g1v2';
 		PRINT '>> Load Duration: ' + CAST(DATEDIFF(second, @start_time, @end_time) AS NVARCHAR) + ' seconds' ;
+		PRINT N'>> Row added: ' + CAST((@row_after - @row_before) AS NVARCHAR)
 		PRINT '        ----        '
 
 		---------------------------------------------------------------------
@@ -280,7 +315,7 @@ BEGIN
 
 		SET @batch_end_time = GETDATE();
 		PRINT'===============================================';
-		PRINT' LOAD BRONZE LAYER COMPLETED';
+		PRINT' TRANSFORM AND LOAD SILVER LAYER COMPLETED';
 		PRINT' >> Total Load Duration: ' + CAST(DATEDIFF(second, @batch_start_time, @batch_end_time) AS NVARCHAR) + ' seconds';
 		PRINT'===============================================';
 	END TRY
