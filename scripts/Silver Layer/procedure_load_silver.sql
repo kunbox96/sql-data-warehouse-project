@@ -255,17 +255,18 @@ BEGIN
 		)
 
 		SELECT 
-			REPLACE(cid, '-', '') AS cid,
-			CASE
-				WHEN UPPER(TRIM(cntry)) IN ('Germany', 'DE') THEN 'Germany'
-				WHEN UPPER(TRIM(cntry)) IN ('United States', 'US', 'USA') THEN 'United States'
-				WHEN UPPER(TRIM(cntry)) IN ('Australia') THEN 'Australia'
-				WHEN UPPER(TRIM(cntry)) IN ('United Kingdom') THEN 'United Kingdom'
-				WHEN UPPER(TRIM(cntry)) IN ('Canada') THEN 'Canada'
-				WHEN UPPER(TRIM(cntry)) IN ('France') THEN 'France'
-				ELSE NULL
-			END AS cntry
-		FROM bronze.erp_loc_a101;
+		    REPLACE(cid, '-', '') AS cid,
+		    CASE 
+		        WHEN UPPER(TRIM(cntry)) IN ('GERMANY', 'DE') THEN 'Germany'						-- Sửa lại phần so sánh IN tên cntry upper case all
+		        WHEN UPPER(TRIM(cntry)) IN ('UNITED STATES', 'US', 'USA') THEN 'United States'
+		        WHEN UPPER(TRIM(cntry)) IN ('AUSTRALIA') THEN 'Australia'
+		        WHEN UPPER(TRIM(cntry)) IN ('UNITED KINGDOM') THEN 'United Kingdom'
+		        WHEN UPPER(TRIM(cntry)) IN ('CANADA') THEN 'Canada'
+		        WHEN UPPER(TRIM(cntry)) IN ('FRANCE') THEN 'France'
+		        WHEN TRIM(cntry) = '' OR cntry IS NULL THEN 'n/a'
+		        ELSE TRIM(cntry)
+		    END AS cntry
+		FROM bronze.erp_loc_a101; 
 
 		SET @end_time = GETDATE();
 		SELECT @row_after = COUNT(*) FROM silver.erp_loc_a101;

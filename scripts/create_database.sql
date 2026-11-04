@@ -38,7 +38,7 @@ IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'bronze')
 BEGIN
     EXEC('CREATE SCHEMA bronze;');
 END;
-GO
+GO	
 
 -- 2. Khởi tạo Schema Silver
 IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'silver')
